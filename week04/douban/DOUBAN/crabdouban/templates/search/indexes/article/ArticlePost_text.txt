@@ -1,0 +1,4 @@
+{{ object.author }}
+{{ object.updated }}
+{{ object.short }}
+{{ object.star }}
