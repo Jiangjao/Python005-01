@@ -3,55 +3,56 @@
 
 import redis
 import time
+import sys
 
+def count_time(bracket:list, limit: int):
+    # 不超过limit次数
+    if len(bracket) < limit:
+        return True
+    
+    # 获取倒数第limit次的发送时间
+    latest_time = float(list[:-limit].decode())
+    now = time.time()
 
-def count_time(client,phone_number: int):
-    send_time = time.time()
-    print(int(round(send_time*1000 )))
-
-    client.rpush(f'{phone_number}:id',int(round(send_time*1000 )))
-    if client.llen(f'{phone_number}:id') > 4:
-        pre = client.lindex(f'{phone_number}:id', 0).decode()
-        nex = client.lindex(f'{phone_number}:id', 3).decode()
-        if int(nex) - int(pre) > 6000:
-            print('more than 5 times, 请等待 1 分钟')
-            return 
+    # 事件差小于60seconds
+    if now - latest_time < 60:
+        return False
+    else:
+        return True
     
 
 def sendsms(client,phone_number: int,contents:str,key:None):
 
-    # 先判断一分钟内
-    count_time(phone_number)
-
-    client.incr(f'{phone_number}',amount=1)
-    count_number = client.get(f"{phone_number}")
-    send_times_count = int(count_number.decode())
-    # client.hset(f'phone_number',count_number,'v1')
-    
-    print('=====')
-    
-    if  send_times_count > 4:
-        
-        print('1 分钟内发送次数超过 5 次, 请等待 1 分钟')
-        # 在判断五次
+    limit = 5
+    bracket = client.lrange(phone_number,0,-1)
+    if count_time(bracket, limit):
+        # 本次发送时间添加到列表末尾
+        client.rpush(phone_number, time.time())
+        # 发送时间列表表头出队，减少存储空间
+        if len(bracket) >= limit -1:
+            client.ltrim(phone_number, -limit, -1)
+        print('发送成功', phone_number, contents)
     else:
-        print('发送成功',phone_number,contents)
-    # print(count_number)
-    # return count_number
+        print(phone_number,'1 分钟内发送次数超过 5 次, 请等待 1 分钟')
 
-sendsms(10121)
-def main(telephone_number:int):
+
+
+def main(phone_number:int):
     # 连接Redis
-    client = redis.Redis(host='localhost',password='Dj970903')
+    client = redis.Redis(host='localhost',password='password')
 
     try:
         while True:
-            sendsms()
+            sendsms(client, phone_number,'nihao')
+            time.sleep(1)
     except KeyboardInterrupt:
         print('have a look')
 
-    print(client.keys())
+if __name__ == '__main__':
+   # 检查命令行参数个数
+    if len(sys.argv) < 2:
+        print('Please specify a phone number,it is a int type')
+        exit(1)
 
-    for key in client.keys():
-        print(key.decode())
-    count_number = 0
+    telephone_number = sys.argv[1]
+    main(telephone_number)
