@@ -33,6 +33,9 @@ class Animal(metaclass=ABCMeta):
 
 class Dog(Animal):
     # the properties generally  like Cat,name & is_suitable_as_pets
+	
+    # 类属性：叫声
+    calls = 'wang'
 
     # 名字
     def __init__(self,name, somatotype,shape,character):
