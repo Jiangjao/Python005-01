@@ -50,24 +50,9 @@ DOWNLOAD_DELAY = 3
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
-DOWNLOADER_MIDDLEWARES = {
-   'spiders.middlewares.SpidersDownloaderMiddleware': 543,
-   'spiders.middlewares.RandomHttpProxyMiddleware': 400,
-}
-
-HTTP_PROXY_LIST = {
-   'https://127.0.0.1:1080',
-   'https://210.26.124.143:808',
-   'https://106.75.226.36:808',
-   'https://120.92.74.237:3128',
-   'https://120.92.74.189:3128',
-   'https://211.159.171.58:80',
-   'https://222.69.130.252:30652',
-   'http://118.190.95.35:9001',
-   'http://61.135.217.7:80',
-   'http://116.1.11.19:80',
-   'http://59.110.136.213:8080'
-}
+#DOWNLOADER_MIDDLEWARES = {
+#    'spiders.middlewares.SpidersDownloaderMiddleware': 543,
+#}
 
 # Enable or disable extensions
 # See https://docs.scrapy.org/en/latest/topics/extensions.html
@@ -78,7 +63,7 @@ HTTP_PROXY_LIST = {
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-   'spiders.pipelines.mysqlPipeline': 400,
+   'spiders.pipelines.SpidersPipeline': 300,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
@@ -101,10 +86,3 @@ ITEM_PIPELINES = {
 #HTTPCACHE_DIR = 'httpcache'
 #HTTPCACHE_IGNORE_HTTP_CODES = []
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
-
-#MYSQL配置
-MYSQL_HOST = 'localhost'
-MYSQL_DBNAME = 'movies'
-MYSQL_USER = 'spider_rw'
-MYSQL_PASSWD = 'spider123'
-MYSQL_PORT = 3306

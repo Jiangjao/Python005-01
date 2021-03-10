@@ -11,4 +11,3 @@ class MaoyanSpidersItem(scrapy.Item):
     name = scrapy.Field()
     star = scrapy.Field()
     releasetime = scrapy.Field()
-    created_at = scrapy.Field()
